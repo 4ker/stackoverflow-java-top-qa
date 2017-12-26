@@ -1,0 +1,607 @@
+#+AUTHOR: TANG ZhiXiong
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/htmlize.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/bigblow.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/hideshow.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css">
+
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-1.11.0.min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.localscroll-min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.zclip.min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/bigblow.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/hideshow.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://tangzhixiong.com/readings/css/main.css"/>
+#+HTML_HEAD: <script type="text/javascript" src="http://tangzhixiong.com/readings/javascript/main.js"></script>
+
+#+HTML_HEAD: <script>$(function(){ /*todo*/ });</script>
+
+* stackoverflow-Java-top-qa
+** 一些基本的约定
+-  文档的文件名，和 =stackoverflowhich-notnull-java-annotation-should-i-usew= 上 的 url 保持一致。
+   例如， =http://stackoverflow.com/questions/8710619/java-operator= 的文件名， 就是 =java-operator.md=
+-  在每篇翻译文档内容的最后，要附上 stackoverflow 的原文链接
+** 每个人可以做（但不限于）
+
+-  找未翻译的问题进行翻译
+-  优化已翻译的问题
+-  输出问答精简汇总版（把所有的问答集中到一个 md
+   文件，然后尽量精简，让别人可 以在一天内把这 100 个问题的精髓都看完）
+-  输出 gitbook 版本（现在直接在 github 上查看，体验不好）
+
+** 文档优化反馈
+请大家多多反馈，优化已翻译好的文章：可以到 [[https://github.com/giantray/stackoverflow-java-top-qa/issues/66][吐槽区]] 吐槽， 也可以在已翻
+译文章基础上进行优化，提新的 PR。文章质量的提升，需要大家一起努力！
+** 目录
+*** [32/38] 基础语法
+- [X] [[file:contents/java-operator.md][Java += 操作符实质]]
+- [X] [[file:contents/read-convert-an-inputstream-to-a-string.md][将 Inputstream 转换为 String]]
+  Apache commons IOUtils
+
+  #+BEGIN_SRC java
+    // method 1
+    StringWriter writer = new StringWriter();
+    IOUtils.copy(inputStream, writer, encoding);
+    String theString = writer.toString();
+
+    // method 2
+    String theString = IOUtils.toString(inputStream, encoding);
+
+    // method 3
+    static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+  #+END_SRC
+- [X] [[file:contents/create-arraylist-from-array.md][将数组转换为 List]]
+  #+BEGIN_SRC java
+    // method 1
+    new ArrayList<Element>(Arrays.asList(array));
+
+    // 定长, 不能 add, remove (搞得跟 array 就一样了)
+    // method 2
+    Arrays.asList(array);
+    // method 3
+    Arrays.asList(new Element(1),new Element(2),new Element(3));
+  #+END_SRC
+- [X] [[file:contents/iterate-through-a-hashmap.md][如何遍历 map 对象]]
+  #+BEGIN_SRC java
+    // method 1: entrySet
+    Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+    for(Map.Entry<Integer, Integer> entry : map.entrySet()){
+        System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue())
+    }
+
+    // method 2: keySet(), values()
+
+    // method 3: iterator
+    Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+    Iterator<Map.Entry<Integer, Integer>> entries = map.entrySet().iterator();
+    while (entries.hasNext()) {
+        Map.Entry<Integer, Integer> entry = entries.next();
+        System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+    }
+
+    // method 4: 迭代 keys 并搜索 values（低效的）
+  #+END_SRC
+- [ ] [[file:contents/in-java-whats-the-difference-between-public-default-protected-and-private.md][public，protected，private，不加修饰符。有什么区别呢？]]
+- [X] [[file:contents/how-can-i-test-if-an-array-contains-a-certain-value.md][如何测试一个数组是否包含指定的值？]]
+  #+BEGIN_SRC java
+    // method 1
+    Arrays.asList(...).contains(...)
+
+    // method 2
+    String[] fieldsToInclude = { "id", "name", "location" };
+    if ( ArrayUtils.contains( fieldsToInclude, "id" ) ) {
+        // Do some stuff.
+    }
+
+    // method 3, for ordered list
+    Arrays.binarySearch(arr, targetValue);
+  #+END_SRC
+- [X] [[file:contents/what-issues-should-be-considered-when-overriding-equals-and-hashcode-in-java.md][重写（Override）equlas 和 hashCode 方法时应考虑的问题]]
+  + equals() 定义了对象的相等关系（自反性、对称性、传递性）
+  + hashCode 只是尽量要求不重合
+  + equals 的对象, hashCode 也要一样, hashCode 一样, 不一定 equal
+- [X] [[file:contents/breaking-out-of-nested-loops-in-java.md][从一个多层嵌套循环中直接跳出]]
+  break+label, 我觉得这个和 goto 就很类似了. 应当避免这样写.
+- [X] [[file:contents/converting-string-to-int-in-java.md][如何将 String 转换为 Int]]
+  + Integer.valueOf(str); ==> Integer
+  + Integer.parseInt(str); ==> int (possible NumberFormatException)
+- [X] [[file:contents/how-to-split-a-string-in-java.md][如何分割（split）string 字符串]]
+  + ~String[] parts = string.split("-");~
+  + 需要注意的是，该方法的参数是个正则表达式, 要注意对某些字符做转码。
+    例如，.在正则表达式中表示任意字符，因此，如果你要通过.号做分割，需要这样写，split("\\.")或者split(Pattern.quote("."))
+- [X] [[file:contents/how-do-i-compare-strings-in-java.md][在 java 中如何对比（compare）string]]
+- [X] [[file:contents/how-to-sort-a-mapkey-value-on-the-values-in-java.md][=Map<Key,Value>=基于 Value 值排序]]
+  + 1: 使用 TreeMap，可以参考下面的代码
+
+    The TreeMap class implements the Map interface by using a tree. A
+    TreeMap provides an efficient means of storing key/value pairs in
+    sorted order, and allows rapid retrieval.
+  + 2: 先通过 linkedlist 排好序，再放到 LinkedHashMap 中
+- [X] [[file:contents/differences-between-hashmap-and-hashtable.md][HashMap 和 Hashtable 的区别]]
+  + Hashtable是同步的，加了synchronized锁，而HashMap不是
+- [X] [[file:contents/how-to-concatenate-two-arrays-in-java.md][如何便捷地将两个数组合到一起]]
+  #+BEGIN_SRC java
+    // method 1
+    ArrayUtils.addAll(T[], T...)
+
+    // method 2
+    public Foo[] concat(Foo[] a, Foo[] b) {
+       int aLen = a.length;
+       int bLen = b.length;
+       Foo[] c= new Foo[aLen+bLen];
+       System.arraycopy(a, 0, c, 0, aLen);
+       System.arraycopy(b, 0, c, aLen, bLen);
+       return c;
+    }
+
+    // method 3
+    public <T> T[] concatenate (T[] a, T[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+
+        @SuppressWarnings("unchecked")
+        T[] c = (T[]) Array.newInstance(a.getClass().getComponentType(), aLen+bLen);
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+
+        return c;
+    }
+    // !!!! 注意，泛型的方案不适用于基本数据类型（int，boolean……)
+  #+END_SRC
+- [X] [[file:contents/does-java-support-default-parameter-values.md][Java 是否支持默认的参数值]]
+  + builders: 使用创建者模式，你可以设定部分参数是有默认值，部分参数是可选的。如：
+  + 方法（构造函数）重载
+  + null 的传递
+  + 多参数方式
+    #+BEGIN_SRC java
+      void foo(String a, Integer... b) {
+          Integer b1 = b.length > 0 ? b[0] : 0;
+          Integer b2 = b.length > 1 ? b[1] : 0;
+          //...
+      }
+
+      foo("a");
+      foo("a", 1, 2);
+    #+END_SRC
+    如果不是同一类型, 就用 Object + cast .
+  + 使用 Map 作为方法中的参数
+- [X] [[file:contents/generating-random-integers-in-a-range-with-Java.md][Java 产生指定范围的随机数]]
+  + Math.random(): [0, 1)
+  + java.util.Random
+  + org.apache.commons.lang3.RandomUtils
+- [X] [[file:contents/what-is-a-javabean-exactly.md][JavaBean 到底是什么]]
+  JavaBean 只是一个标准
+  + 所有的属性是私有的（通过 getters/setters 处理属性）
+  + 一个公有的无参数的构造器
+  + 实现了序列化（Serializable）
+
+  另外，一个 JavaBean 类和一个普通的类没有语法区别，如果遵循上面的标准
+  的话，一个类可以认为成 JavaBean 类。
+
+  之所以需要 JavaBean，是因为这样预定义了一种类的格式，一些库能依据这
+  个约定的格式，来做一些自动化处理。举个例子，如果一个类库需要通过流来
+  处理你传递的任何对象，它知道它可以正常处理，因为这个对象是可序列化的。
+  （假设这个类库要求你的对象是 JavaBeans）
+- [ ] [[file:contents/difference-between-wait-and-sleep.md][wait() 和 sleep() 的区别]]
+- [X] [[file:contents/how-do-i-call-one-constructor-from-another-in-java.md][能否在一个构造器中调用另一个构造器]]
+  #+BEGIN_SRC java
+    public class Foo {
+        private int x;
+
+        public Foo() {
+            this(1);
+        }
+
+        public Foo(int x) {
+            this.x = x;
+        }
+    }
+  #+END_SRC
+
+  请注意，在构造器中，你只能调用一次其他的构造器。并且调用其他构造器的
+  语句，必须是这个构造器的第一个语句。
+- [X] [[file:contents/does-finally-always-execute-in-java.md][=finally= 代码块总会被执行么]]
+  #+BEGIN_SRC java
+    try {
+        something();
+        return success;
+    } catch (Exception e) {
+        return failure;
+    } finally {
+        System.out.println("i don't know if this will get printed out.");
+    }
+    // 只有以下情况 finally 不会被调用：
+    //     +    当你使用 System.exit() 后
+    //     +    其他线程干扰了现在运行的线程（通过 interrupt 方法）
+    //     +    JVM 崩溃 (crash) 了
+  #+END_SRC
+- [X] [[file:contents/convert-a-string-to-an-enum-in-java.md][如何将 String 转换为 enum]]
+  + Blah.valueOf("A") 将会得到 Blah.A
+  + 静态方法 valueOf() 和 values() 不存在于源码中，而是在编译时创建
+  + hack
+    #+BEGIN_SRC java
+      public static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
+          if( c != null && string != null ) {
+              try {
+                  return Enum.valueOf(c, string.trim().toUpperCase());
+              } catch(IllegalArgumentException ex) {}
+          }
+          return null;
+      }
+
+      public enum MyEnum {
+          ...
+          public static MyEnum fromString(String name) {
+              return getEnumFromString(MyEnum.class, name);
+          }
+          ...
+      }
+    #+END_SRC
+- [X] [[file:contents/declare-array-in-java.md][在 Java 中声明数组]]
+  #+BEGIN_SRC java
+    // primtive type
+    int[] myIntArray = new int[3];
+    int[] myIntArray = {1, 2, 3};
+    int[] myIntArray = new int[]{1, 2, 3};
+
+    // string
+    String[] myStringArray = new String[3];
+    String[] myStringArray = {"a", "b","c"};
+    String[] myStringArray = new String[]{"a", "b", "c"};
+  #+END_SRC
+- [X] [[file:contents/what-is-reflection-and-why-is-it-useful.md][反射是什么及其用途]]
+  #+BEGIN_SRC java
+    Method method = foo.getClass().getMethod("dosomething",null);
+    method.invoke(foo,null);  //调用foo的dosomething方法
+  #+END_SRC
+
+  可以看看我的这个笔记 https://github.com/4ker/JavaAOP
+- [X] [[file:contents/why-cant-i-switch-on-a-string.md][为什么不能用 string 类型进行 switch 判断]]
+  在 JDK7 中，这个特性已经实现了。在编译阶段，以 string 作为 case 值的代码，会按照特定的模式，被转换为更加复杂的代码。最终的执行代码将是一些使用了 JVM 指令的代码。
+
+  这是在说, java 7 之前是不可以的.
+- [X] [[file:contents/comparing-java-enum-members-or-equals.md][比较 java 枚举成员使用 equal 还是 ==]]
+  + 如果你看过枚举的源码，你会发现在源码中，equals 也仅仅非常简单的 ==
+  + 其实很简单, 因为 Enum 的 valueOf 方法是从自己的备选项里面枚举, 找到那个 enum 取出来的, 所以内存位置也是一样的.
+  + 还有一个区别是 null.equals 可能有风险, == 则没有
+  + 总而言之，在枚举比较上使用 == ， 因为：
+    - 能正常工作
+    - 更快
+    - 运行时是安全的
+    - 编译期也是安全的
+- [X] [[file:contents/how-to-create-a-file-and-write-to-a-file-in-java.md][用 java 怎么创建一个文件并向该文件写文本内容]]
+  #+BEGIN_SRC java
+    // TEXT FILE
+    // method 1: print writer, text file
+    PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
+    writer.println("The first line");
+    writer.println("The second line");
+    writer.close();
+    // method 2: array of lines to file
+    List<String> lines = Arrays.asList("The first line", "The second line");
+    Path file = Paths.get("the-file-name.txt");
+    Files.write(file, lines, Charset.forName("UTF-8"));
+    //Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
+
+    // BINARY
+    // method 3: FileOutputStream, binary
+    byte data[] = ...
+    FileOutputStream out = new FileOutputStream("the-file-name");
+    out.write(data);
+    out.close();
+    // method 4: FileOutputStream, binary
+    Path file = Paths.get("the-file-name");
+    Files.write(file, data);
+  #+END_SRC
+- [X] [[file:contents/what-is-a-serialversionuid-and-why-should-i-use-it.md][serialVersionUID 有什么作用？该如何使用？]]
+  + 对象的序列化主要有两种用途:
+    - 把对象序列化成字节码，保存到指定介质上 (如磁盘等)
+    - 用于网络传输
+  + 可当我们增加 email 字段后，不作向后兼容。即放弃原来序列化到磁盘的 Person 类，这时我们可以将版本标识提高
+  + serialVersionUID 就是控制版本是否兼容的，若我们认为修改的 Person 是向后兼容的，
+    则不修改 serialVersionUID；反之，则提高 serialVersionUID 的值。再回到一开始的问题
+- [X] [[file:contents/why-is-java-vector-class-considered-obsolete-or-deprecated.md][为什么 Java 的 =Vector= 类被认为是过时的或者废弃的]]
+  + Vector 中对每一个独立操作都实现了同步，这通常不是我们想要的做法。
+  + 总的来说，在大多数情况下，这种同步方法是存在很大缺陷的。正如 Mr Brain Henk 指出，
+    你可以通过调用Collections.synchronizedList来装饰一个集合 - 事实上 Vector 将 “可变数组” 的集合实现
+    与 “同步每一个方法” 结合起来的做法是另一个糟糕的设计；
+- [X] [[file:contents/how-does-the-java-for-each-loop-work.md][Java 的 foreach 循环是如何工作的]]
+  用了 iterator
+  #+BEGIN_SRC java
+    // for (String item : someList) {System.out.println(item);}
+    for(Iterator<String> i = someList.iterator(); i.hasNext(); ) {
+        String item = i.next();
+        System.out.println(item);
+    }
+  #+END_SRC
+- [X] [[/why-is-subtracting-these-two-times-in-1927-giving-a-strange-result.md][为什么相减这两个时间（1927 年）会得到奇怪的结果]]
+  这是因为 1927 年 11 月 31 日上海的时区改变了。 观看此页获得更多关于
+  上海 1927 年的细节。 这个问题主要是由于在 1927 年 12 月 31 日的午夜，
+  时钟回调了 5 分钟零 52 秒。 所以 "1927-12-31 23:54:08" 这个时间实际
+  上发生了两次，看上去 java 将这个时间解析为之后的那个瞬间。 因此出现
+  了这种差别。
+
+  这只是美好但奇怪的世界时区中的一个插曲。
+
+  Shanghai Municipality (/mjʊ'nɪsə'pæləti/) 自治市
+
+  Daylight Saving Time (DST) Not Observed in Year 1927
+  Shanghai observed China Standard Time (CST) all year.
+
+  DST was not in use in 1927.
+- [ ] [[file:contents/when-and-how-should-i-use-a-threadlocal-variable.md][该什么时候使用 ThreadLocal 变量，它是如何工作的]]
+  一种可能的（也是常见的）使用情形是你不想通过同步方式（synchronized）访问非线程安全的对象（说的就是 SimpleDateFormat）, 而是想给每个线程一个对象实例的时候。 例如
+  #+BEGIN_SRC java
+    public class Foo
+    {
+        // SimpleDateFormat is not thread-safe, so give one to each thread
+        private static final ThreadLocal<SimpleDateFormat> formatter = new ThreadLocal<SimpleDateFormat>(){
+            @Override
+            protected SimpleDateFormat initialValue() {
+                return new SimpleDateFormat("yyyyMMdd HHmm");
+            }
+        };
+
+        public String formatIt(Date date) {
+            return formatter.get().format(date);
+        }
+    }
+  #+END_SRC
+- [ ] [[file:contents/how-do-servlets-work-instantiation-shared-variables-and-multithreading.md][servlets 的运行原理]]
+- [X] [[file:contents/how-can-i-generate-an-md5-hash.md][如何计算 MD5 值]]
+  使用 MessageDigest 和 String 时，一定要显式声明你的数据编码类型。如
+  果你使用无参的 String.getBytes() , 它会以当前平台的默认编码来转换数
+  据。不同平台的默认编码可能是不同的，这可能会导致你的数据不一致。
+  #+BEGIN_SRC java
+    import java.security.*;
+
+    ...
+    byte[] bytesOfMessage = yourString.getBytes("UTF-8");
+    MessageDigest md = MessageDigest.getInstance("MD5");
+    byte[] thedigest = md.digest(bytesOfMessage);
+  #+END_SRC
+  如果你的要计算的数据量很大，你可以循环使用 .update(byte[]) 方法来加载数据。加载完毕后用 .digest() 方法来得到计算出的 MD5 值。
+- [ ] [[file:contents/what-is-the-difference-between-a-soft-reference-and-a-weak-reference-in-java.md][Java 中软引用和弱引用的区别]]
+- [ ] [[file:contents/what-is-the-difference-between-jsf-servlet-and-jsp.md][JSF, Servlet 和 JSP]]
+- [X] [[file:contents/java-inner-class-and-static-nested-class.md][Java 内部类和嵌套静态类]]
+  因此, 要实例化一个内部类对象, 必须先实例化外部类对象. 然后用这种语法来创建内部类对象:
+
+  #+BEGIN_SRC java
+    OuterClass.InnerClass innerObject = outerObject.new InnerClass();
+  #+END_SRC
+
+  这是什么鬼...
+
+  #+BEGIN_SRC java
+    class A {
+        int t() { return 1; }
+        static A a =  new A() { int t() { return 2; } };
+    }
+  #+END_SRC
+- [X] [[file:contents/whats-the-difference-between-component-repository-service-annotations-in.md][=@Component=, =@Repository=, =@Service= 的区别]]
+  在 spring 集成的框架中，注解在类上的@Component，@Repository，@Service等注解能否被互换？或者说这些注解有什么区别？
+
+  在 Spring2.0 之前的版本中，@Repository注解可以标记在任何的类上，用来
+  表明该类是用来执行与数据库相关的操作（即 dao 对象），并支持自动处理
+  数据库操作产生的异常
+
+  在 Spring2.5 版本中，引入了更多的 Spring 类注解：
+  @Component,@Service,@Controller。Component是一个通用的 Spring 容器管
+  理的单例 bean 组件。而@Repository, @Service, @Controller就是针对不同
+  的使用场景所采取的特定功能化的注解组件。
+
+  因此，当你的一个类被@Component所注解，那么就意味着同样可以用
+  @Repository, @Service, @Controller来替代它，同时这些注解会具备有更多
+  的功能，而且功能各异。
+
+  最后，如果你不知道要在项目的业务层采用@Service还是@Component注解。那
+  么，@Service是一个更好的选择。
+
+  ---
+
+  这几个注解几乎可以说是一样的：因为被这些注解修饰的类就会被 Spring 扫
+  描到并注入到 Spring 的 bean 容器中。
+
+  这里，有两个注解是不能被其他注解所互换的：
+  + @Controller 注解的 bean 会被 spring-mvc 框架所使用。
+  + @Repository 会被作为持久层操作（数据库）的 bean 来使用
+- [X] [[file:contents/how-to-create-a-generic-array-in-java.md][如何创建泛型 java 数组]]
+  #+BEGIN_SRC java
+    public class GenSet<E> {
+        private E[] a;
+
+        public GenSet(Class<E> c, int s) {
+            // 使用原生的反射方法，在运行时知道其数组对象类型
+            @SuppressWarnings("unchecked")
+            final E[] a = (E[]) Array.newInstance(c, s);
+            this.a = a;
+        }
+
+        E get(int i) {
+            return a[i];
+        }
+
+        //...如果传入参数不为E类型，那么强制添加进数组将会抛出异常
+        void add(E e) {...}
+    }
+  #+END_SRC
+*** [8/21] 编程技巧
+- [X] [[file:contents/avoiding-null-statements-in-java.md][去掉烦人的 =!=null=（判空语句）]]
+
+  用 Java 8 的 Optional 啊! 懒得看了.
+- [X] [[file:contents/get-current-stack-trace-in-java.md][获取完整的堆栈信息]]
+
+  捕获了异常后，如何获取完整的堆栈轨迹（stack trace）
+  #+BEGIN_SRC java
+  // method 1
+  String fullStackTrace = org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace(e);
+
+  // method 2
+  Thread.currentThread().getStackTrace();
+  #+END_SRC
+- [X] [[file:contents/initialization-of-an-arraylist-in-one-line.md][如何用一行代码初始化一个 ArrayList]]
+  #+BEGIN_SRC java
+    // good
+    ArrayList<String> places = new ArrayList<String>(
+        Arrays.asList("Buenos Aires", "Córdoba", "La Plata"));
+
+    // works too. 匿名内部类
+    ArrayList<String> list = new ArrayList<String>() {{
+        add("A");
+        add("B");
+        add("C");
+    }};
+  #+END_SRC
+- [X] [[file:contents/how-can-i-initialize-a-static-map.md][初始化静态 map]]
+
+  #+BEGIN_SRC java -r
+    // 我使用static初始化器来创建一个固定长度的静态map
+    public class Test{
+        private static final Map<Integer, String> myMap;
+        static {
+            Map<Integer, String> aMap = ...;
+            aMap.put(1,"one");
+            aMap.put(2,"two");
+            myMap = Collections.unmodifiableMap(aMap); (ref:h1507011118)
+        }
+    }
+
+    // 我喜欢用Guava（是 Collection 框架的增强）的方法初始化一个静态的，不可改变的map
+    static fianl Map<Integer, String> myMap = ImmutablMap.of(
+        1，"one",
+        2, "two"
+    )
+
+    // build
+    static fianl Map<Integer, String> myMap =
+            new ImmutableMap.Builder<String, Integer>()
+                    .put("one", 1)
+                    .put("two", 2)
+                    .put("three", 3)
+                    .build();
+  #+END_SRC
+- [X] [[file:contents/check-if-at-least-two-out-of-three-booleans-are-true.md][给 3 个布尔变量，当其中有 2 个或者 2 个以上为 true 才返回 true]]
+
+  这个智障答案...
+
+  我觉得 ~return ((a && b) || (b && c) || (a && c))~ 是最好的.
+- [X] [[file:contents/whats-the-simplest-way-to-print-a-java-array.md][输出 Java 数组最简单的方式]]
+  #+BEGIN_SRC java
+    int[] intArray = new int[] {1, 2, 3, 4, 5};
+    System.out.println(Arrays.toString(intArray));
+    //输出: [1, 2, 3, 4, 5]
+
+    String[] strArray = new String[] {"John", "Mary", "Bob"};
+    System.out.println(Arrays.deepToString(strArray));
+    //输出: [John, Mary, Bob]
+
+    // Arrays.deepToString与Arrays.toString不同之处在于，Arrays.deepToString更适合打印多维数组
+  #+END_SRC
+- [X] [[file:contents/why-is-char-preferred-over-string-for-passwords-in-java.md][什么在 java 中存放密码更倾向于 =char= 而不是 String]]
+
+  String是不可变的。虽然String加载密码之后可以把这个变量扔掉，但是字符
+  串并不会马上被GC回收，一但进程在GC执行到这个字符串之前被dump，dump出
+  的的转储中就会含有这个明文的字符串。那如果我去“修改”这个字符串，比如
+  把它赋一个新值，那么是不是就没有这个问题了？答案是否定的，因为String
+  本身是不可修改的，任何基于String的修改函数都是返回一个新的字符串，原
+  有的还会在内存里。
+
+  然而对于数组，你可以在抛弃它之前直接修改掉它里面的内容或者置为乱码，
+  密码就不会存在了。但是如果你什么也不做直接交给gc的话，也会存在上面一
+  样的问题。
+
+  所以，这是一个安全性的问题--但是，即使使用char[]也仅仅是降低了攻击者
+  攻击的机会，而且仅仅对这种特定的攻击有效。
+- [ ] [[file:contents/how-to-avoid-java-code-in-jsp-files.md][如何避免在 JSP 文件中使用 Java 代码]]
+- [ ] [[file:contents/examples-of-gof-design-patterns-in-javas-core-libraries.md][Java 源码里的设计模式]]
+- [ ] [[file:contents/how-to-generate-a-random-alpha-numeric-string.md][如何产生一个随机的字母数字串作为 session 的唯一标识符]]
+
+  如果允许产生的随机字符串是可猜测的(随机字符串比较都短,或者使用有缺陷
+  的随机数生成器),进而导致攻击者可能会劫持到会话的,可以使用一个相对简
+  单随机数生成代码,如下所示:
+- [ ] [[file:contents/what-is-an-efficient-way-to-implement-a-singleton-in-java.md][如何创建单例]]
+  #+BEGIN_SRC java
+    // 预加载
+    public class Foo {
+
+        private static final Foo INSTANCE = new Foo();
+
+        private Foo() {
+            if (INSTANCE != null) {
+                throw new IllegalStateException("Already instantiated");
+            }
+        }
+
+        public static Foo getInstance() {
+            return INSTANCE;
+        }
+    }
+
+    // 懒加载
+    class Foo {
+
+        private static Foo INSTANCE = null;
+
+        private Foo() {
+            if (INSTANCE != null) {
+                throw new IllegalStateException("Already instantiated");
+            }
+        }
+
+        public static Foo getInstance() {
+            if (INSTANCE == null) {
+                INSTANCE = new Foo();
+            }
+            return INSTANCE;
+        }
+    }
+  #+END_SRC
+- [X] [[file:contents/implements-runnable-vs-extends-thread.md][实现 Runnable 接口 VS. 继承 Thread 类]]
+
+  在Java中，并发执行任务一般有两种方式：
+  + 实现Runnable接口
+  + 继承Thread类
+
+  一般而言，推荐使用方式（1）,主要是由于大多数情况下，人们并不会特别去
+  关注线程的行为，也不会去改写Thread已有的行为或方法，仅仅是期望执行任
+  务而已。 因此，使用接口的方式能避免引入一些并不需要的东西，同时也不
+  会影响继承其他类，并使程序更加灵活。
+
+  额外的tips：
+  + Runnable与Thread不是对等的概念
+
+    在Thinking in Java中，作者吐槽过Runnable的命名，称其叫做Task更为合理。
+    在Java中，Runnable只是一段用于描述任务的代码段而已，是静态的概念，需要通过线程来执行。而Thread更像是一个活体，自身就具有很多行为，能够用来执行任务。
+  + 仅仅当你确实想要重写（override）一些已有行为时，才使用继承，否则请使用接口。
+  + 在Java 5之前，创建了Thread却没调用其start()方法，可能导致内存泄露。
+- [ ] [[file:contents/which-notnull-java-annotation-should-i-use.md][我应该用哪一个 =@NotNull= 注解]]
+- [ ] [[file:contents/how-can-i-convert-a-stack-trace-to-a-string.md][怎样将堆栈追踪信息转换为字符串]]
+- [ ] [[file:contents/dealing-with-java-lang-outofmemoryerror-permgen-space-error.md][如何处理 java.lang.outOfMemoryError PermGen space error]]
+- [ ] [[file:contents/how-can-i-pad-an-integers-with-zeros-on-the-left.md][如何在整数左填充 0]]
+- [ ] [[file:contents/is-null-check-needed-before-calling-instanceof.md][在调用 instanceof 前需要进行 null 检查吗]]
+- [ ] [[file:contents/how-do-i-create-a-java-string-from-the-contents-of-a-file.md][如何从文件里读取字符串]]
+- [ ] [[file:contents/iterating-through-a-collection-avoiding-concurrentmodificationexception-when-reiterating-through-a-collection-avoiding-concurrentmodificationexception-when-re.md][遍历集合时移除元素，怎样避免 ConcurrentModificationException 异常抛出]]
+- [ ] [[file:contents/how-can-i-permanently-have-line-numbers-in-intellij.md][如何让 IntelliJ 编辑器永久性显示代码行数]]
+- [ ] [[file:contents/how-can-i-create-an-executable-jar-with-dependencies-using-maven.md][如何使用 maven 把项目及其依赖打包为可运行 jar 包]]
+*** 网络
+-  [[file:contents/using-java-net-urlconnection-to-fire-and-handle-http-requests.md][如何使用 java.net.URLConnection 接收及发送 HTTP 请求]]
+*** 性能
+-  [[file:contents/when-to-use-linkedlist-over-arraylist.md][LinkedList、ArrayList 各自的使用场景，如何确认应该用哪一个呢？]]
+-  [[file:contents/stringbuilder-and-stringbuffer.md][StringBuilder 和 StringBuffer 有哪些区别呢]]
+-  [[file:contents/why-is-processing-a-sorted-array-faster-than-an-unsorted-array.md][为什么处理排序的数组要比非排序的快]]
+-  [[file:contents/creating-a-memory-leak-with-java.md][如何使用 Java 创建一个内存泄漏的程序]]
+-  [[file:contents/why-is-printing-b-dramatically-slower-than-printing.md][为什么打印“B”会明显的比打印“#”慢]]
+*** 测试
+-  [[file:contents/how-to-test-a-class-that-has-private-methods-fields-or-inner-classes.md][如何测试 private 方法，变量或者内部类]]
+-  [[file:contents/how-do-you-assert-that-a-certain-exception-is-thrown-in-junit-4-tests.md][JUnit4 如何断言确定异常的抛出]]
+*** Android
+-  [[file:contents/download-a-file-with-android-and-showing-the-progress-in-a-progressdialog.md][在 Android 里面下载文件，并在 ProgressDialog 显示进度]]
+-  [[file:contents/is-there-a-unique-android-device-id.md][如何获取 Android 设备唯一 ID]]
+-  [[file:contents/android-sdk-installation-doesnt-find-jdk.md][安装 Android SDK 的时候找不到 JDK]]
